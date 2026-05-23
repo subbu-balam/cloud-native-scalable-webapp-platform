@@ -1,6 +1,0 @@
-com\taskflow\backend\model\Task.class
-com\taskflow\backend\controller\TaskController.class
-com\taskflow\backend\repository\TaskRepository.class
-com\taskflow\backend\service\TaskService.class
-com\taskflow\backend\controller\HealthController.class
-com\taskflow\backend\TaskflowBackendApplication.class
