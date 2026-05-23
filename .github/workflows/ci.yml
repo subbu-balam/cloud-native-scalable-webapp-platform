@@ -8,6 +8,11 @@ on:
     branches:
       - main
 
+
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   backend:
     name: Backend - Maven Build
@@ -71,3 +76,44 @@ jobs:
 
       - name: Build frontend Docker image
         run: docker build -t taskflow-frontend:test ./apps/frontend
+
+
+
+  publish-images:
+    name: Publish Docker Images to GHCR
+    runs-on: ubuntu-latest
+    needs:
+      - backend
+      - frontend
+      - docker
+
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./apps/backend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/taskflow-backend:latest
+            ghcr.io/${{ github.repository_owner }}/taskflow-backend:${{ github.sha }}
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./apps/frontend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/taskflow-frontend:latest
+            ghcr.io/${{ github.repository_owner }}/taskflow-frontend:${{ github.sha }}
