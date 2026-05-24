@@ -1,29 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.postgres.name }}
+  name: postgres
   namespace: {{ .Values.namespace.name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.postgres.name }}
+      app: postgres
   template:
     metadata:
       labels:
-        app: {{ .Values.postgres.name }}
+        app: postgres
     spec:
       containers:
-        - name: {{ .Values.postgres.name }}
+        - name: postgres
           image: {{ .Values.postgres.image }}
           ports:
             - containerPort: {{ .Values.postgres.port }}
           envFrom:
             - secretRef:
                 name: postgres-secret
-          volumeMounts:
-            - name: postgres-storage
-              mountPath: /var/lib/postgresql/data
           readinessProbe:
             exec:
               command:
@@ -33,7 +30,5 @@ spec:
                 - -d
                 - {{ .Values.postgres.database }}
             initialDelaySeconds: 10
-            periodSeconds: 10
-      volumes:
-        - name: postgres-storage
-          emptyDir: {}
+            periodSeconds: 5
+            failureThreshold: 10

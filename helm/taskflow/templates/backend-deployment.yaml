@@ -14,14 +14,18 @@ spec:
         app: {{ .Values.backend.name }}
     spec:
       containers:
-        - name: {{ .Values.backend.name }}
-          image: {{ .Values.backend.image }}
-          imagePullPolicy: Always
+        - name: backend
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.backend.port }}
           env:
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://{{ .Values.postgres.name }}:{{ .Values.postgres.port }}/{{ .Values.postgres.database }}
+              value: jdbc:postgresql://postgres:5432/taskflowdb
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: org.postgresql.Driver
+            - name: SPRING_JPA_DATABASE_PLATFORM
+              value: org.hibernate.dialect.PostgreSQLDialect
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -32,19 +36,17 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
-            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
-              value: org.postgresql.Driver
-            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: update
           readinessProbe:
             httpGet:
               path: /health
               port: {{ .Values.backend.port }}
-            initialDelaySeconds: 30
+            initialDelaySeconds: 90
             periodSeconds: 10
+            failureThreshold: 10
           livenessProbe:
             httpGet:
               path: /health
               port: {{ .Values.backend.port }}
-            initialDelaySeconds: 45
+            initialDelaySeconds: 120
             periodSeconds: 20
+            failureThreshold: 5

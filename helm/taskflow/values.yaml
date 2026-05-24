@@ -2,23 +2,35 @@ namespace:
   name: taskflow
 
 postgres:
-  name: postgres
-  image: postgres:16-alpine
+  image: postgres:16
   port: 5432
-  database: taskflow
-  username: taskflow_user
-  password: taskflow_password
+  database: taskflowdb
+  username: taskflow
+  password: taskflowpass
 
 backend:
   name: taskflow-backend
-  image: ghcr.io/subbu-balam/taskflow-backend:latest
   replicas: 1
+  image:
+    repository: ghcr.io/subbu-balam/taskflow-backend
+    tag: latest
+    pullPolicy: Always
   port: 8080
-  nodePort: 30080
 
 frontend:
   name: taskflow-frontend
-  image: ghcr.io/subbu-balam/taskflow-frontend:latest
   replicas: 1
+  image:
+    repository: ghcr.io/subbu-balam/taskflow-frontend
+    tag: latest
+    pullPolicy: Always
   port: 80
-  nodePort: 30081
+
+services:
+  backend:
+    type: ClusterIP
+    port: 8080
+  frontend:
+    type: NodePort
+    port: 80
+    nodePort: 30082

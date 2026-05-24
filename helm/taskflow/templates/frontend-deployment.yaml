@@ -14,8 +14,8 @@ spec:
         app: {{ .Values.frontend.name }}
     spec:
       containers:
-        - name: {{ .Values.frontend.name }}
-          image: {{ .Values.frontend.image }}
-          imagePullPolicy: Always
+        - name: frontend
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.frontend.port }}

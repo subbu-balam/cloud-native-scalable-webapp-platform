@@ -28,6 +28,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- Security config for disabling CSRF on REST APIs -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
         <!-- Database/JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -41,14 +47,14 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- PostgreSQL later for Docker Compose -->
+        <!-- PostgreSQL for Docker Compose and Kubernetes -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Actuator later for monitoring -->
+        <!-- Actuator for monitoring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>

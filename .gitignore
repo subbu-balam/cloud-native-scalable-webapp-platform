@@ -4,3 +4,18 @@ target/
 apps/backend/target/ 
 target/ 
 apps/backend/target/ 
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# SSH keys
+taskflow-key
+taskflow-key.pub
+
+# Build outputs
+target/
+dist/
+node_modules/
